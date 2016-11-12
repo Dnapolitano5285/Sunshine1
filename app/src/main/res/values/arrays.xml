@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="units_preferences_array">
+        <item>@string/metric_preferences_label</item>
+        <item>@string/imperial_preferences_label</item>
+    </string-array>
+
+    <string-array name="units_preferences_values">
+        <item>@string/pref_units_metric</item>
+        <item>@string/pref_units_imperial</item>
+    </string-array>
+
+
+</resources>

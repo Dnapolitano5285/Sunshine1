@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/main_menu"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<EditTextPreference
+        android:key="@string/location_preference_key"
+        android:title="@string/pref_location_key"
+        android:hint="@string/enter_zip"
+        android:defaultValue="12047"/>
+
+    <ListPreference
+        android:key="@string/pref_units_key"
+        android:title="Units of Measure"
+        android:entries="@array/units_preferences_array"
+        android:entryValues="@array/units_preferences_values"
+        android:defaultValue="@string/pref_units_metric"/>
+
+
+</PreferenceScreen>

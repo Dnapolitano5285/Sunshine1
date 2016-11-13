@@ -31,8 +31,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.example.android.sunshine.app.data.WeatherContract;
-
 import static com.example.android.sunshine.app.data.WeatherContract.*;
 
 /**
@@ -43,6 +41,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private static final int FORECAST_LOADER = 0;
     // For the forecast view we're showing only a small subset of the stored data.
     // Specify the columns we need.
+    private ListView mListView;
+    private int mPosition = ListView.INVALID_POSITION;
+
+    private static final String SELECTED_KEY = "position";
+
     private static final String[] FORECAST_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
             // the content provider joins the location & weather tables in the background
@@ -97,6 +100,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         setHasOptionsMenu(true);
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(mPosition!=ListView.INVALID_POSITION){
+            outState.putInt(SELECTED_KEY,mPosition);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.forecastfragment, menu);
@@ -118,17 +130,21 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if(savedInstanceState != null){
+            mPosition = savedInstanceState.getInt(SELECTED_KEY);
+        }
         // The CursorAdapter will take data from our cursor and populate the ListView.
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        listView.setAdapter(mForecastAdapter);
+        mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        mListView.setAdapter(mForecastAdapter);
 
         // We'll call our MainActivity
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -142,6 +158,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                                     locationSetting, cursor.getLong(COL_WEATHER_DATE)
                             ));
                 }
+                mPosition = position;
             }
         });
         return rootView;
@@ -185,6 +202,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         mForecastAdapter.swapCursor(cursor);
+        if(mPosition!= ListView.INVALID_POSITION)
+            mListView.smoothScrollToPosition(mPosition);
+
     }
 
     @Override
